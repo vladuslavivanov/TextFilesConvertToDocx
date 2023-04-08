@@ -6,27 +6,25 @@ using System.Threading.Tasks;
 
 namespace CopyCodeFromTheDirectory.WorkWithTheFile {
   internal class CopyFiles {
-    
     static public Dictionary<string, List<string>> GetFiles(DirectoryInfo directory, in string expansion) {
       Dictionary<string, List<string>> files = new Dictionary<string, List<string>>();
-      IEnumerable<DirectoryInfo> folders = directory.EnumerateDirectories();
-      IEnumerable<FileInfo> filesInDirectory =  directory.EnumerateFiles();
-      InsertFilesFromThisFolder(files, filesInDirectory, expansion);
-      foreach (var catalogItem in folders) {
-        filesInDirectory = catalogItem.GetFiles();
-        InsertFilesFromThisFolder(files, filesInDirectory, expansion);
-      }
+      RecursionSearchFiles(directory, expansion, ref files);
       return files;
     }
-
-    static private void InsertFilesFromThisFolder(Dictionary<string, List<string>> files,
+    static private void InsertFilesFromThisFolder(ref Dictionary<string, List<string>> files,
                                                   IEnumerable<FileInfo> filesInDirectory,
                                                   in string expansion) {
       foreach(var file in filesInDirectory) {
         if (expansion == file.Extension) {
           StreamReader text = file.OpenText();
           List<string> textStr = readFile(text);
-          files.Add(file.Name, textStr);
+          if (files.ContainsKey(file.Name)) {
+            if (files[file.Name] != textStr) {
+              files.Add(file.FullName, textStr);
+            }
+            else continue;
+          }
+          else files.Add(file.Name, textStr);
         }
       }
     }
@@ -39,6 +37,23 @@ namespace CopyCodeFromTheDirectory.WorkWithTheFile {
         str = text.ReadLine();
       }
       return file;
+    }
+
+    static private void RecursionSearchFiles(DirectoryInfo directory,
+                                            string expansion,
+                                            ref Dictionary<string, List<string>> files) {
+      IEnumerable<DirectoryInfo> folders = directory.EnumerateDirectories();
+      int countFolders = folders.Count(folders => folders.Name.ToString().Length > 0);
+      if (countFolders != 0) {
+        foreach (var folder in folders) {
+          RecursionSearchFiles(folder, expansion, ref files);
+        }
+      }
+      IEnumerable<FileInfo> filesInDirectory = directory.EnumerateFiles();
+      InsertFilesFromThisFolder(ref files,filesInDirectory, expansion);
+      if(files.Count != 0) {
+        Console.WriteLine(files.Count.ToString());
+      }
     }
   }
 }

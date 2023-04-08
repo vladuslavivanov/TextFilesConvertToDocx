@@ -8,7 +8,6 @@ using Xceed.Words.NET;
 namespace CopyCodeFromTheDirectory
 {
     internal class SaveFile {
-
     static public void SaveToWord(Dictionary<string, List<String>> files) {
       string path;
       do {
@@ -21,7 +20,6 @@ namespace CopyCodeFromTheDirectory
         nameFile.IndentationHanging = 28.5F + 28.5F / 4;
         nameFile.InsertText("\n");
         nameFile.FontSize(14).Font("Times New Roman").InsertText("Код с файла «" + file.Key + "»:");
-
         Paragraph code = document.InsertParagraph();
         foreach (var line in file.Value) {
           code.FontSize(10).Font("Courier New").InsertText(line+"\n");

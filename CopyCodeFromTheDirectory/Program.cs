@@ -6,6 +6,5 @@ class Program {
     string extension = WriteExtension.writeExtension();
     Dictionary<string, List<String>> files = CopyFiles.GetFiles(directory, extension);
     SaveFile.SaveToWord(files);
-    //SaveFile.SaveData(files);
   }
 }
