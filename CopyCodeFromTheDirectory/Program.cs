@@ -5,6 +5,7 @@ class Program {
     DirectoryInfo directory = InputDirectory.EnterDirectory();
     string extension = WriteExtension.writeExtension();
     Dictionary<string, List<String>> files = CopyFiles.GetFiles(directory, extension);
-    SaveFile.SaveData(files);
+    SaveFile.SaveToWord(files);
+    //SaveFile.SaveData(files);
   }
 }

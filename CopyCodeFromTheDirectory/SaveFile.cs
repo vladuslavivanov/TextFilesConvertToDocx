@@ -1,39 +1,66 @@
-﻿using System.Security;
+﻿using System.Reflection.Metadata;
+using System.Security;
+using System.Xml.Linq;
+using CopyCodeFromTheDirectory.Exceptions;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 
-namespace CopyCodeFromTheDirectory {
-  internal class SaveFile {
-    static public void SaveData(Dictionary<string, List<String>> files) {
+namespace CopyCodeFromTheDirectory
+{
+    internal class SaveFile {
+
+    static public void SaveToWord(Dictionary<string, List<String>> files) {
       string path;
       do {
         path = GetPath();
       } while (!CheckPath(path));
-      StreamWriter fileWrite = new StreamWriter(path);
+      DocX document = DocX.Create(path);
+      
       foreach (var file in files) {
-        fileWrite.WriteLine("");
-        fileWrite.WriteLine("Название файла \"" + file.Key + "\"");
-        foreach(var line in file.Value) {
-          fileWrite.WriteLine(line);
+        Paragraph nameFile = document.InsertParagraph();
+        nameFile.IndentationHanging = 28.5F + 28.5F / 4;
+        nameFile.InsertText("\n");
+        nameFile.FontSize(14).Font("Times New Roman").InsertText("Код с файла «" + file.Key + "»:");
+
+        Paragraph code = document.InsertParagraph();
+        foreach (var line in file.Value) {
+          code.FontSize(10).Font("Courier New").InsertText(line+"\n");
         }
-        fileWrite.WriteLine("");
       }
-      fileWrite.Close();
+      document.Save();
     }
 
     static private string GetPath() {
-      Console.WriteLine("Введите путь к файлу, куда нужно сохранить данные:");
+      Console.WriteLine("Введите путь к файлу (.docx), куда нужно сохранить данные:");
       string path = Console.ReadLine()!;
       return path;
     }
 
     static private bool CheckPath(in string path) {
-      FileStream file = null;
       try {
-        file = new FileStream(path, FileMode.Append);
-        if (file.Length != 0)
-          throw new NotAnEmptyFileException("В файле есть данные!\n Введите другой файл,\n либо удалите данные из этого файла!");
+        if (!path.EndsWith(".docx"))
+          throw new ExtensionException("Введите файл с расширением \".docx\"!");
+        DocX document = DocX.Load(path + ".docx");
       }
-      catch (NotAnEmptyFileException e) {
+      catch(FileNotFoundException) {
+        DocX document = DocX.Create(path);
+        document.Save();
+        return true;
+      }
+      catch (ExtensionException e) {
         Console.WriteLine(e.Message);
+        return false;
+      }
+      catch (DirectoryNotFoundException) {
+        Console.WriteLine("Данной директории не существует!");
+        return false;
+      }
+      catch (IOException) {
+        Console.WriteLine("Другой процесс пользуется вашим файлом!\n");
+        return false;
+      }
+      catch (UnauthorizedAccessException) {
+        Console.WriteLine("Вы ввели путь к папке!");
         return false;
       }
       catch (ArgumentException) {
@@ -43,18 +70,6 @@ namespace CopyCodeFromTheDirectory {
       catch (SecurityException) {
         Console.WriteLine("Файл доступен только для чтения!");
         return false;
-      }
-      catch (DirectoryNotFoundException) {
-        Console.WriteLine("Данной директории не существует!");
-        return false;
-      }
-      catch (IOException) {
-        Console.WriteLine("Файл недоступен!");
-        return false;
-      }
-      finally {
-        if(file != null)
-          file.Close();
       }
       return true;
     }
