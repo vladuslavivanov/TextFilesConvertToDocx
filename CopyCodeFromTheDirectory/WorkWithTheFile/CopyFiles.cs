@@ -51,9 +51,6 @@ namespace CopyCodeFromTheDirectory.WorkWithTheFile {
       }
       IEnumerable<FileInfo> filesInDirectory = directory.EnumerateFiles();
       InsertFilesFromThisFolder(ref files,filesInDirectory, expansion);
-      if(files.Count != 0) {
-        Console.WriteLine(files.Count.ToString());
-      }
     }
   }
 }
