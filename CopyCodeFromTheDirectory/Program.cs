@@ -1,5 +1,6 @@
 ﻿using CopyCodeFromTheDirectory;
 using CopyCodeFromTheDirectory.WorkWithTheFile;
+
 class Program {
   static void Main() {
     DirectoryInfo directory = InputDirectory.EnterDirectory();
