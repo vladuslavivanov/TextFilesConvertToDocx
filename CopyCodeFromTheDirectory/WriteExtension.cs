@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CopyCodeFromTheDirectory; 
 
-namespace CopyCodeFromTheDirectory {
-  internal class WriteExtension {
+internal class WriteExtension {
     static public string writeExtension() {
       string value;
       do {
@@ -14,5 +9,4 @@ namespace CopyCodeFromTheDirectory {
       } while (value[0] != '.');
       return value;
     } 
-  }
 }

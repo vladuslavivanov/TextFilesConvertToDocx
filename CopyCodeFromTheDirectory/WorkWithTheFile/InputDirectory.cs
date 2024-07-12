@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CopyCodeFromTheDirectory.WorkWithTheFile;
 
-namespace CopyCodeFromTheDirectory.WorkWithTheFile {
-  internal class InputDirectory {
+internal class InputDirectory {
     public static DirectoryInfo EnterDirectory() {
       DirectoryInfo? directory = null;
       do {
@@ -21,5 +16,4 @@ namespace CopyCodeFromTheDirectory.WorkWithTheFile {
       } while (true);
       return directory;
     } 
-  }
 }
